@@ -24,7 +24,7 @@ namespace RosSharp.Urdf.Editor
     public class UrdfInertialEditor : UnityEditor.Editor
     {
 
-        Rigidbody rigidbody;
+        ArticulationBody rigidbody;
         SerializedProperty pDisplayInertiaGizmo;
         SerializedProperty pRigidbodyDataSource;
 
@@ -35,7 +35,7 @@ namespace RosSharp.Urdf.Editor
 
         protected virtual void OnEnable()
         {
-            rigidbody = (Rigidbody)serializedObject.FindProperty("_rigidbody").objectReferenceValue;
+            rigidbody = (ArticulationBody)serializedObject.FindProperty("_rigidbody").objectReferenceValue;
             pDisplayInertiaGizmo = serializedObject.FindProperty("DisplayInertiaGizmo");
             pRigidbodyDataSource = serializedObject.FindProperty("rigidbodyDataSource");
             pMass = serializedObject.FindProperty("Mass");

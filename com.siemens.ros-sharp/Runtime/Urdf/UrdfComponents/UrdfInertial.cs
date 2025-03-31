@@ -20,13 +20,13 @@ using UnityEngine;
 
 namespace RosSharp.Urdf
 {
-    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(ArticulationBody))]
     public class UrdfInertial : MonoBehaviour
     {
-        [SerializeField] private Rigidbody _rigidbody;
+        [SerializeField] private ArticulationBody _rigidbody;
         public bool DisplayInertiaGizmo;
 
-        public enum RigidbodyDataSource { Urdf, Unity, Manual};
+        public enum RigidbodyDataSource { Urdf, Unity, Manual };
         public RigidbodyDataSource rigidbodyDataSource;
 
         public float Mass;
@@ -60,11 +60,11 @@ namespace RosSharp.Urdf
         private void Initialize()
         {
             rigidbodyDataSource = RigidbodyDataSource.Urdf;
-  
+
             Mass = UrdfMass;
             CenterOfMass = UrdfCenterOfMass;
             InertiaTensor = UrdfInertiaTensor;
-            InertiaTensorRotation =  UrdfInertiaTensorRotation;
+            InertiaTensorRotation = UrdfInertiaTensorRotation;
 
             DisplayInertiaGizmo = false;
 
@@ -74,11 +74,11 @@ namespace RosSharp.Urdf
         #region Runtime
         private void Reset()
         {
-            if(isCreated)
+            if (isCreated)
                 Initialize();
         }
 
-         private void OnValidate()
+        private void OnValidate()
         {
             if (isCreated)
                 UpdateRigidBodyData();
@@ -86,7 +86,7 @@ namespace RosSharp.Urdf
 
         public void UpdateRigidBodyData()
         {
-            _rigidbody = GetComponent<Rigidbody>();
+            _rigidbody = GetComponent<ArticulationBody>();
 
             switch (rigidbodyDataSource)
             {
@@ -101,11 +101,8 @@ namespace RosSharp.Urdf
                 case RigidbodyDataSource.Unity:
                     {
                         _rigidbody.mass = Mass;
-                        bool isKinematic = _rigidbody.isKinematic;
-                        _rigidbody.isKinematic = false;
                         _rigidbody.ResetCenterOfMass();
                         _rigidbody.ResetInertiaTensor();
-                        _rigidbody.isKinematic = isKinematic;
                         CenterOfMass = _rigidbody.centerOfMass;
                         InertiaTensor = _rigidbody.inertiaTensor;
                         InertiaTensorRotation = _rigidbody.inertiaTensorRotation;
@@ -224,7 +221,7 @@ namespace RosSharp.Urdf
             return new Link.Inertial(Math.Round(_rigidbody.mass, RoundDigits), inertialOrigin, inertia);
         }
 
-        private static Link.Inertial.Inertia ExportInertiaData(Rigidbody _rigidbody)
+        private static Link.Inertial.Inertia ExportInertiaData(ArticulationBody _rigidbody)
         {
             Matrix3x3 lamdaMatrix = new Matrix3x3(new[] {
                 _rigidbody.inertiaTensor[0],
